@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "entries": [
+    {
+      "name": "dcc-asset-nasa3d",
+      "description": "Search and download free NASA 3D Resources files",
+      "dcc": ["maya", "blender", "houdini", "3dsmax"],
+      "tags": ["asset", "nasa", "space", "download", "free"],
+      "version": "0.1.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/dcc-mcp/dcc-asset-nasa3d",
+        "ref": "main"
+      }
+    }
+  ]
+}
+
