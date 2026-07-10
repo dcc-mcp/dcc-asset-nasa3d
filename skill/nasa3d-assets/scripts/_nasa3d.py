@@ -7,6 +7,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from dcc_mcp_core.asset_import import AssetAttribution, AssetDescriptor, AssetFileVariant
+
 
 REPO = "nasa/NASA-3D-Resources"
 BRANCH = "master"
@@ -44,3 +46,22 @@ def download(path: str, output_dir: str) -> str:
         target.write_bytes(resp.read())
     return str(target)
 
+
+def asset_descriptor(path: str, local_path: str) -> dict[str, Any]:
+    descriptor = AssetDescriptor(
+        asset_id=f"nasa3d:{path}",
+        variants=[
+            AssetFileVariant(
+                local_path=local_path,
+                format=Path(local_path).suffix.lstrip(".").lower() or "unknown",
+                preferred=True,
+            )
+        ],
+        attribution=AssetAttribution(
+            source_url=raw_url(path),
+            license_text=LICENSE["usage_notice"],
+            attribution_text="NASA 3D Resources — observe NASA media and insignia usage rules.",
+        ),
+    )
+    descriptor.validate()
+    return descriptor.to_dict()
