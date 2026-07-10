@@ -17,11 +17,11 @@ copyright", but NASA insignia, identifiers, and related imagery have separate
 brand/media usage rules. Do not imply NASA endorsement and check the official
 NASA Images and Media Guidelines before product, advertising, or logo use.
 
-This skill returns `license_name` and `license_url` in search/download results
-so downstream tools can surface that notice.
+This skill returns `license_name`, `license_url`, and a validated `asset_descriptor` in download
+results. The descriptor carries the local path, source URL, and usage attribution for a DCC
+adapter import skill.
 
 ## Tools
 
 - `search_nasa3d_assets`
 - `download_nasa3d_file`
-

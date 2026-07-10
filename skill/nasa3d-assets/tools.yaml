@@ -30,7 +30,7 @@ tools:
       type: object
 
   - name: download_nasa3d_file
-    description: Download one file from the NASA 3D Resources repository.
+    description: Download one file and return a validated AssetDescriptor with NASA usage attribution.
     source_file: scripts/download_nasa3d_file.py
     execution: sync
     affinity: any
@@ -52,4 +52,20 @@ tools:
           type: string
     output_schema:
       type: object
-
+      required: [asset_descriptor]
+      properties:
+        asset_descriptor:
+          type: object
+          required: [asset_id, variants, attribution]
+          properties:
+            asset_id:
+              type: string
+            variants:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required: [local_path, format]
+            attribution:
+              type: object
+              required: [source_url, license_text]
