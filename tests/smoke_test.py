@@ -25,6 +25,14 @@ def validate_skill() -> None:
     assert not report.has_errors, report
 
 
+def descriptor_smoke() -> None:
+    helper = load("_nasa3d")
+    descriptor = helper.asset_descriptor("models/apollo.glb", "/tmp/apollo.glb")
+    assert descriptor["variants"][0]["local_path"] == "/tmp/apollo.glb"
+    assert descriptor["attribution"]["source_url"].endswith("models/apollo.glb")
+    assert descriptor["attribution"]["license_text"]
+
+
 def live_smoke() -> None:
     if os.environ.get("RUN_LIVE_API_SMOKE") != "true":
         print("skip live NASA 3D smoke")
@@ -36,6 +44,7 @@ def live_smoke() -> None:
 
 def main() -> None:
     validate_skill()
+    descriptor_smoke()
     live_smoke()
 
 
