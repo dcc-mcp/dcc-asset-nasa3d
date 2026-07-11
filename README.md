@@ -1,5 +1,7 @@
 # DCC-MCP NASA 3D Assets
 
+![Workflow showcase](docs/workflow-showcase.png)
+
 Search and download files from the public
 [NASA-3D-Resources](https://github.com/nasa/NASA-3D-Resources) repository.
 
