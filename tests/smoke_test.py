@@ -9,9 +9,12 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skill" / "nasa3d-assets"
 SCRIPTS = SKILL / "scripts"
+MISSING_MODULE = object()
 
 
 class FakeResponse:
@@ -43,6 +46,17 @@ def validate_skill() -> None:
     assert not report.has_errors, report
 
 
+def compatibility_smoke() -> None:
+    skill_text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+    frontmatter = yaml.safe_load(skill_text.split("---", 2)[1])
+    assert frontmatter["compatibility"] == "dcc-mcp-core 0.19.90+, Python 3.7+"
+
+    marketplace = json.loads((ROOT / "marketplace.json").read_text(encoding="utf-8"))
+    assert marketplace["entries"][0]["min_core_version"] == "0.19.90"
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "`dcc-mcp-core` 0.19.90 or newer" in readme
+
+
 def descriptor_smoke() -> None:
     helper = load("_nasa3d")
     descriptor = helper.asset_descriptor("models/apollo.glb", "/tmp/apollo.glb")
@@ -59,10 +73,12 @@ def assert_runtime_restores_sys_path(
     path_identity = sys.path
     path_snapshot = list(sys.path)
     script_dir_count = sys.path.count(str(SCRIPTS))
+    helper_before = sys.modules.get("_nasa3d", MISSING_MODULE)
     result = run_skill_script(str(SCRIPTS / script_name), params)
     assert sys.path is path_identity
     assert sys.path == path_snapshot
     assert sys.path.count(str(SCRIPTS)) == script_dir_count
+    assert sys.modules.get("_nasa3d", MISSING_MODULE) is helper_before
     return result
 
 
@@ -104,6 +120,7 @@ def runtime_import_failure_smoke() -> None:
     path_identity = sys.path
     path_snapshot = list(sys.path)
     script_dir_count = sys.path.count(str(SCRIPTS))
+    helper_before = sys.modules.get("_nasa3d", MISSING_MODULE)
     with patch("builtins.__import__", side_effect=reject_helper):
         try:
             from dcc_mcp_core._server import run_skill_script
@@ -116,6 +133,7 @@ def runtime_import_failure_smoke() -> None:
     assert sys.path is path_identity
     assert sys.path == path_snapshot
     assert sys.path.count(str(SCRIPTS)) == script_dir_count
+    assert sys.modules.get("_nasa3d", MISSING_MODULE) is helper_before
 
 
 def live_smoke() -> None:
@@ -134,6 +152,7 @@ def live_smoke() -> None:
 
 def main() -> None:
     validate_skill()
+    compatibility_smoke()
     descriptor_smoke()
     runtime_import_smoke()
     runtime_import_failure_smoke()
