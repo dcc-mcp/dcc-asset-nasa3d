@@ -9,7 +9,17 @@ on:
 
 jobs:
   smoke:
+    name: smoke (Core ${{ matrix.core-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - core-version: "0.19.90"
+            core-spec: "dcc-mcp-core==0.19.90"
+          - core-version: latest
+            core-spec: dcc-mcp-core
     env:
       RUN_LIVE_API_SMOKE: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     steps:
@@ -17,7 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python -m pip install --upgrade pip dcc-mcp-core pyyaml
+      - run: python -m pip install --upgrade pip pyyaml "${{ matrix.core-spec }}"
+      - run: python -c "import importlib.metadata as m; print(m.version('dcc-mcp-core'))"
       - run: python -m compileall skill tests
       - run: python tests/smoke_test.py
 

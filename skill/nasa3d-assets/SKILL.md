@@ -2,7 +2,7 @@
 name: nasa3d-assets
 description: Search and download NASA 3D Resources files as validated AssetDescriptors with usage attribution.
 license: MIT
-compatibility: "dcc-mcp-core 0.19+, Python 3.7+"
+compatibility: "dcc-mcp-core 0.19.90+, Python 3.7+"
 metadata:
   dcc-mcp:
     version: v0.1.0

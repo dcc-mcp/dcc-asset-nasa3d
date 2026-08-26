@@ -55,6 +55,8 @@ Search and download files from the public
 
 ## Install
 
+Runtime execution requires `dcc-mcp-core` 0.19.90 or newer.
+
 ```bash
 dcc-mcp-cli marketplace add dcc-mcp/dcc-asset-nasa3d
 dcc-mcp-cli marketplace install dcc-asset-nasa3d
